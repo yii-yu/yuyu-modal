@@ -13,13 +13,13 @@
  *  		class="... yuyu-modal" 		
  *  		data-toggle="yuyu-modal-ajax"
  *  		data-content="?ajax=form-message-user"   		
- *  		data-title="Заголовок" 
- *          data-reload="close"  	
- *			data-button="Сохранить"
- *			data-options='{"background":"#ff0000","backgroundTop":"#08e2ca","color":"#08e2ca"}'
- *		 >
- *			Добавить обращение
- *		</a>
+ *  		data-title="Заголовок"   		
+ *              data-reload="close"  	
+ *		data-button="Сохранить"
+ *		data-options='{"background":"#ff0000","backgroundTop":"#08e2ca","color":"#08e2ca"}'
+ *	>
+ *		Добавить обращение
+ *	</a>
  *
  *
  * 	Описание атрибутов кнопки модального окна:
@@ -28,9 +28,9 @@
  *  	data-toggle  - переключатель: 
  *  		 - если "yuyu-modal-ajax" то содержимое модального окна вытягивется с сервера по адресу, указанному в  data-content;
  *  		 - если "yuyu-modal" то содержимое модального окна берется из атрибута 	data-content;  		   	 			
- *  	data-content - указывает адрес содержимого или содержит содержимое модального окна;  		
+ *  	data-content - указывает адрес содержимого или содержит информацию модального окна;  		
  *  	data-title	- заголовок, который будет выводится в модальном окне;  		
- *      data-button - название кнопки в футоре. Данная кнопка отправляет форму на сервер;
+ *      data-button - название кнопки в футоре. Данная кнопка отправляет форму на сервер; 			
  *      data-reload - перезагрузка страницы, после закрытия модального окна;
  *          - если close - после перезагрузки страницы;             
  *          - если submit - при получении ответа сервера, после отправки формы;  			
@@ -123,17 +123,17 @@
     function Widget() {
 
         this.buttons = [];
+        this.csrfParam;
+        this.csrfToken;
         this.elemStyle;
 
         this.config = {
             classNameBtn: 'yuyu-modal',
             classNameSubmit: 'yuyu-submit-ajax'
         };
-
-
+        
         this.init();
         this.listener();
-
     }
 
 
@@ -141,6 +141,7 @@
         var
         tagsA = document.getElementsByTagName('a'),
         tagsInput = document.getElementsByTagName('input'),
+        tagsMeta= document.getElementsByTagName('meta'),
         i;
 
         for (i = 0; i < tagsA.length; i++) {
@@ -152,6 +153,16 @@
         for (i = 0; i < tagsInput.length; i++) {
             if (tagsInput[i].classList.contains(this.config.classNameSubmit)) {
                 this.buttons.push(tagsInput[i]);
+            }
+        }
+
+        for (i = 0; i < tagsMeta.length; i++) {
+
+            if (tagsMeta[i].name=='csrf-param') {
+                this.csrfParam=tagsMeta[i].content;
+            }     
+            if (tagsMeta[i].name=='csrf-token') {
+                this.csrfToken=tagsMeta[i].content;
             }
         }
     }
@@ -213,23 +224,27 @@
         xhr = new XMLHttpRequest(),
         f = form || document.createElement('form'),
         formData = new FormData(f);
+        
+        if(this.csrfParam && this.csrfToken){
+           formData.append(this.csrfParam, this.csrfToken);
+       }       
 
-        xhr.timeout = 5000;
-        xhr.onreadystatechange = function (e) {
-            if (xhr.readyState === 4) {
+       xhr.timeout = 5000;
+       xhr.onreadystatechange = function (e) {
+        if (xhr.readyState === 4) {
 
-                if (xhr.status === 200) {
-                    callback(null, xhr.response)
-                } else {
-                    callback(xhr.status, null)
-                }
+            if (xhr.status === 200) {
+                callback(null, xhr.response)
+            } else {
+                callback(xhr.status, null)
             }
         }
-        xhr.ontimeout = function () {
-            console.log('Timeout');
-        }
+    }
+    xhr.ontimeout = function () {
+        console.log('Timeout');
+    }
 
-        xhr.open("POST", url);
+    xhr.open("POST", url);
         // xhr.setRequestHeader('Content-type','application/json; charset=utf-8');
         xhr.send(formData);
 
@@ -247,8 +262,6 @@
         btnSave,
         _this = this;
 
-
-
         div = document.createElement('div');
         div.innerHTML = option.htmlModal;
 
@@ -262,7 +275,6 @@
         if (dataset.options) {
             setStyleUser(dataset.options);
         }
-
 
         div.children[0].style.display = 'block';
 
@@ -282,8 +294,6 @@
             wrap.style.top = (window.scrollY / this.getHeightScreen() * 100) + 5 + '%';
         }, 100);
 
-
-
         div.addEventListener('click', closeModal);
         btnSave.addEventListener('click', sendForm);
 
@@ -295,7 +305,7 @@
 
                 wrap.style.maxHeight = 0;
 
-                // Даем отработать анимации перед удаление модального окна				
+                // Даем отработать анимации перед удалением модального окна				
 
                 wrap.addEventListener("transitionend", function () {
 
@@ -323,8 +333,8 @@
                     if(dataset.reload=='submit'){
                         location.reload(true); 
                     }else{
-                        content.innerHTML = error || result;
-                        footer.style.display = 'none';  
+                    content.innerHTML = error || result;
+                    footer.style.display = 'none';                 
                     }
 
                 });
