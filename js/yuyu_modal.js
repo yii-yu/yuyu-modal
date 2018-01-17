@@ -28,11 +28,11 @@
  *  	data-toggle  - переключатель: 
  *  		 - если "yuyu-modal-ajax" то содержимое модального окна вытягивется с сервера по адресу, указанному в  data-content;
  *  		 - если "yuyu-modal" то содержимое модального окна берется из атрибута 	data-content;  		   	 			
- *  	data-content - указывает адрес содержимого или содержит информацию модального окна;  		
- *  	data-title	- заголовок, который будет выводится в модальном окне;  		
- *      data-button - название кнопки в футоре. Данная кнопка отправляет форму на сервер; 			
+ *  	data-content - указывает адрес содержимого или содержит содержимое модального окна;  		
+ *  	data-title   - заголовок, который будет выводится в модальном окне;  		
+ *      data-button - название кнопки в футоре. Данная кнопка отправляет форму на сервер;
  *      data-reload - перезагрузка страницы, после закрытия модального окна;
- *          - если close - после перезагрузки страницы;             
+ *          - если close - после закрытия модального окна;             
  *          - если submit - при получении ответа сервера, после отправки формы;  			
  *      data-options - стилизация модального окна;
  *		"background" - цвет заливки шапки модального окна,кнопки в футоре и цвет рамки модального окна;
@@ -140,6 +140,7 @@
     Widget.prototype.init = function () {
         var
         tagsA = document.getElementsByTagName('a'),
+        tagsLi = document.getElementsByTagName('li'),
         tagsInput = document.getElementsByTagName('input'),
         tagsMeta= document.getElementsByTagName('meta'),
         i;
@@ -149,7 +150,11 @@
                 this.buttons.push(tagsA[i]);
             }
         }
-
+        for (i = 0; i < tagsLi.length; i++) {
+            if (tagsLi[i].classList.contains(this.config.classNameBtn)) {
+                this.buttons.push(tagsLi[i]);
+            }
+        }
         for (i = 0; i < tagsInput.length; i++) {
             if (tagsInput[i].classList.contains(this.config.classNameSubmit)) {
                 this.buttons.push(tagsInput[i]);
