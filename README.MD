@@ -63,7 +63,7 @@ https://cdn.rawgit.com/yii-yu/yuyu-modal/486b81d6/js/yuyu_modal.js
 ----
 В отправляемой из модального окна форме прописать onsubmit="return false;" <form ... onsubmit="return false;" ><form>
 
-Для передачи csrf токена на сервер страница в <head> </head> должна содержать тэг вида: 
+Для передачи csrf токена на сервер, страница в тэге ```html <head>...</head> должна содержать тэг вида: 
 ```html
 <meta name="csrf-token" content="NhsgCyA...">
 ```
