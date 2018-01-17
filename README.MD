@@ -1,4 +1,5 @@
-Модальное окно 
+Модальное окно
+==============
 yuyu-modal
 -------------
 Модальное окно, с возможностью подгружать содержимое с сервера и отправлять обратно форму с данными в асинхронном режиме (ajax).
@@ -12,6 +13,8 @@ yuyu-modal
 https://rawgit.com/yii-yu/yuyu-modal/master/js/yuyu_modal.js
 
 Ссылка production(текущая версия в дальнейшем не будет меняться):
+
+https://cdn.rawgit.com/yii-yu/yuyu-modal/486b81d6/js/yuyu_modal.js
 
 Подключается на странице как обычный js файл, например:
 <script type="text/javascript" src="https://rawgit.com/yii-yu/yuyu-modal/master/js/yuyu_modal.js"></script>
